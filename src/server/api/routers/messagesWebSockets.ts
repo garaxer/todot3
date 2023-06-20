@@ -2,6 +2,7 @@ import { z } from "zod";
 import BigNumber from "bignumber.js";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { EventEmitter } from "events";
+import { observable } from "@trpc/server/observable";
 const ee = new EventEmitter();
 
 interface ChatMessage {
@@ -204,6 +205,20 @@ const addInput = (input: string): void => {
 };
 
 export const messageRouter = createTRPCRouter({
+  onAddMessage: protectedProcedure.subscription(() => {
+    return observable<ChatMessage>((emit) => {
+      const onAdd = (data: ChatMessage) => {
+        // emit data to client
+        emit.next(data);
+      };
+      // trigger `onAdd()` when `add` is triggered in our event emitter
+      ee.on("addMessage", onAdd);
+      // unsubscribe function when client disconnects or stops subscribing
+      return () => {
+        ee.off("addMessage", onAdd);
+      };
+    });
+  }),
   addMessage: protectedProcedure
     .input(
       z.object({
@@ -214,7 +229,13 @@ export const messageRouter = createTRPCRouter({
     )
     .mutation(({ input }) => {
       messages.push(input);
-      addInput(input.message);
+      // messages.push({
+      //   user: "system",
+      //   message: `Please enter a number ${count}`,
+      //   id: count,
+      // });
+      ee.emit("addMessage", input);
+      count++;
       return input;
     }),
 
