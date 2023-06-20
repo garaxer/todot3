@@ -12,11 +12,11 @@ const Home: NextPage = () => {
   const {
     data: messages,
     refetch: refreshMessages,
-    isFetching,
+    isLoading,
   } = api.message.getMessages.useQuery(undefined, {
     enabled: sessionData?.user !== undefined,
+    refetchInterval: 3000, // TODO websockets
   });
-
 
   const addMessage = api.message.addMessage.useMutation({
     onSuccess: () => {
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
                 message={message}
               />
             ))}
-            {isFetching && (
+            {isLoading && (
               <MessageBubble message={"..."} side="left" key="..." />
             )}
             <div ref={messagesEndRef} />
@@ -83,8 +83,13 @@ const Home: NextPage = () => {
               className="mr-5 w-full rounded-lg border-2 border-gray-300 p-5"
               placeholder="Guess"
               onKeyDown={(e) => e.key === "Enter" && onAdd()}
+              disabled={addMessage.isLoading}
             />
-            <button className="btn-primary btn text-white" onClick={onAdd}>
+            <button
+              className="btn-primary btn text-white"
+              onClick={onAdd}
+              disabled={addMessage.isLoading}
+            >
               Send
             </button>
           </div>

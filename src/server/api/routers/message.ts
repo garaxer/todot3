@@ -1,8 +1,6 @@
 import { z } from "zod";
 import BigNumber from "bignumber.js";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { EventEmitter } from "events";
-const ee = new EventEmitter();
 
 interface ChatMessage {
   user: string;
@@ -65,7 +63,6 @@ let fibKeys: { [key: string]: boolean } = {};
 
 function addOutput(message: string) {
   console.log(message);
-  ee.emit("addMessage", { user: "system", message, id: Date.now() });
   messages.push({ user: "system", message, id: Date.now() });
 }
 
@@ -220,7 +217,8 @@ export const messageRouter = createTRPCRouter({
 
   getMessages: protectedProcedure
     .input(z.number().default(10))
-    .query(({ input }) => {
-      return input > 0 ? messages.slice(-input) : messages;
+    .query(({ input, ctx }) => {
+      console.log([ctx.session.user.email]); // TODO make unique game per user.
+      return input > 0 ? messages?.slice(-input) : messages;
     }),
 });
