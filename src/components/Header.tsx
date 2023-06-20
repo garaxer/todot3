@@ -1,12 +1,22 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import Link from "next/link";
 
-const Header = () => {
+type HeaderProps = {
+  title?: string;
+};
+
+const Header = ({ title = "Notes for" }: HeaderProps) => {
   const { data: sessionData } = useSession();
   return (
     <div className="navbar bg-primary text-primary-content">
       <div className="flex-1 pl-5 text-3xl font-bold">
-        {sessionData?.user?.name ? `Notes for ${sessionData?.user?.name}` : ""}
+        {sessionData?.user?.name ? `${title} ${sessionData?.user?.name}` : ""}
+      </div>
+      <div className="gap-2">
+        <Link href={"/"}>Note </Link>
+        <Link href={"todo"}>Todo </Link>
+        <Link href={"fibask"}>Fibask poc </Link>
+        <Link href={"fibask/hook"}> Fibask front end </Link>
       </div>
       <div className="flex-none gap-2">
         <div className="dropdown-end dropdown">
@@ -20,8 +30,6 @@ const Header = () => {
                 <img
                   src={sessionData?.user?.image ?? ""}
                   alt={sessionData?.user?.name ?? ""}
-                //   width={10}
-                //   height={10}
                 />
               </div>
             </label>
@@ -35,8 +43,6 @@ const Header = () => {
                 <img
                   src={sessionData?.user?.image ?? ""}
                   alt={sessionData?.user?.name ?? ""}
-                //   width={10}
-                //   height={10}
                 />
               </div>
             </label>
