@@ -110,6 +110,7 @@ const Content: React.FC = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               createTopic.mutate({
+                section: 'note',
                 title: e.currentTarget.value,
               });
               e.currentTarget.value = "";

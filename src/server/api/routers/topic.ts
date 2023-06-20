@@ -23,12 +23,13 @@ export const topicRouter = createTRPCRouter({
   }),
 
   create: protectedProcedure
-    .input(z.object({ title: z.string() }))
+    .input(z.object({ title: z.string(), section: z.string() }))
     .mutation(({ ctx, input }) => {
       counter++;
       return ctx.prisma.topic.create({
         data: {
           title: `${input.title}_${counter}`,
+          section: input.section,
           userId: ctx.session.user.id,
         },
       });

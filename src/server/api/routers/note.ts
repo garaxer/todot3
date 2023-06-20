@@ -36,4 +36,14 @@ export const noteRouter = createTRPCRouter({
         },
       });
     }),
+
+  getManyIn: protectedProcedure
+    .input(z.object({ topicIds: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.prisma.note.findMany({
+        where: {
+          topicId: { in: input.topicIds },
+        },
+      });
+    }),
 });
