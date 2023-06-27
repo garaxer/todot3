@@ -5,7 +5,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import Header from "~/components/Header";
 import { NoteCard } from "~/components/NoteCard";
-import { NoteEditor } from "~/components/noteEditor";
+import { NoteEditor } from "~/components/NoteEditor";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
