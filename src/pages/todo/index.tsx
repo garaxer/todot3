@@ -99,6 +99,11 @@ const Content: React.FC = () => {
   }, [topics]);
   const [newColumn, setNewColumn] = useState("");
 
+
+  if (!sessionData?.user) {
+    return <h1>Please login</h1>
+  }
+
   return (
     <div className="m-5 flex flex-row justify-between gap-5">
       {Object.entries(inputInColumns).map(([column, value]) => (
